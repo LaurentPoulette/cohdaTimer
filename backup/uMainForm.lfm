@@ -1,0 +1,113 @@
+object MainForm: TMainForm
+  Left = 590
+  Height = 170
+  Top = 145
+  Width = 644
+  BorderStyle = bsNone
+  Caption = 'BrowserHostAppCommunication - Initializing...'
+  ClientHeight = 170
+  ClientWidth = 644
+  Color = clCaptionText
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  FormStyle = fsSystemStayOnTop
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  object Panel1: TPanel
+    Left = 2
+    Height = 166
+    Top = 2
+    Width = 640
+    Align = alClient
+    BorderSpacing.Around = 2
+    BevelOuter = bvNone
+    Caption = 'Panel1'
+    ClientHeight = 166
+    ClientWidth = 640
+    Color = clBtnFace
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 0
+    object WVWindowParent1: TWVWindowParent
+      Left = 37
+      Height = 166
+      Top = 0
+      Width = 603
+      Align = alClient
+      TabOrder = 0
+      Browser = WVBrowser1
+    end
+    object pnStatut: TPanel
+      Left = 0
+      Height = 166
+      Top = 0
+      Width = 37
+      Align = alLeft
+      BevelOuter = bvNone
+      ClientHeight = 166
+      ClientWidth = 37
+      Color = clBlue
+      ParentBackground = False
+      ParentColor = False
+      TabOrder = 1
+      OnMouseDown = pnStatutMouseDown
+      OnMouseEnter = pnStatutMouseEnter
+      OnMouseLeave = pnStatutMouseLeave
+      OnMouseMove = pnStatutMouseMove
+      OnMouseUp = pnStatutMouseUp
+      object btExit: TBitBtn
+        Left = 0
+        Height = 30
+        Top = 136
+        Width = 37
+        Align = alBottom
+        Kind = bkClose
+        ModalResult = 11
+        TabOrder = 0
+        OnClick = btExitClick
+      end
+      object btReload: TBitBtn
+        Left = 0
+        Height = 30
+        Top = 106
+        Width = 37
+        Align = alBottom
+        Kind = bkRetry
+        ModalResult = 4
+        TabOrder = 1
+        OnClick = btReloadClick
+      end
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 300
+    OnTimer = Timer1Timer
+    Left = 656
+    Top = 136
+  end
+  object WVBrowser1: TWVBrowser
+    TargetCompatibleBrowserVersion = '95.0.1020.44'
+    AllowSingleSignOnUsingOSPrimaryAccount = False
+    OnInitializationError = WVBrowser1InitializationError
+    OnAfterCreated = WVBrowser1AfterCreated
+    OnWebMessageReceived = WVBrowser1WebMessageReceived
+    Left = 520
+    Top = 80
+  end
+  object tiMinimize: TTimer
+    Enabled = False
+    OnTimer = tiMinimizeTimer
+    Left = 419
+    Top = 38
+  end
+  object timerIdle: TTimer
+    Interval = 10000
+    OnTimer = timerIdleTimer
+    Left = 423
+    Top = 112
+  end
+end
