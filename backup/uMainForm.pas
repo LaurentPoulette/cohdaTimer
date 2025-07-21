@@ -10,7 +10,6 @@ uses
   uWVBrowser, uWVWinControl, uWVWindowParent, uWVTypes, uWVConstants, uWVTypeLibrary,
   uWVLibFunctions, uWVLoader, uWVInterfaces, uWVCoreWebView2Args,
   uWVBrowserBase, uWVCoreWebView2SharedBuffer,
-
   Windows;
 
 type
@@ -20,8 +19,10 @@ type
   TMainForm = class(TForm)
     btExit: TBitBtn;
     btReload: TBitBtn;
+    btHide: TBitBtn;
     Panel1: TPanel;
     pnStatut: TPanel;
+    tiHide: TTimer;
     timerIdle: TTimer;
     tiMinimize: TTimer;
     WVWindowParent1: TWVWindowParent;
@@ -29,6 +30,7 @@ type
     WVBrowser1: TWVBrowser;
 
     procedure btExitClick(Sender: TObject);
+    procedure btHideClick(Sender: TObject);
     procedure btReloadClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -39,6 +41,7 @@ type
     procedure pnStatutMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
     procedure pnStatutMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: integer);
+    procedure tiHideTimer(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure SendMsgBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -77,8 +80,9 @@ var
   startX, startY: integer;
   isMinimized: boolean;
   isShown: boolean;
-  canReload:boolean;
-  lastX,lastY:integer;
+  canReload: boolean;
+  lastX, lastY: integer;
+  bSizing:boolean;
 
 implementation
 
@@ -108,9 +112,9 @@ const
   CUSTOM_SHARED_BUFFER_SIZE = 1024;
 
 
-  procedure DebugMsg(const Msg: String);
+procedure DebugMsg(const Msg: string);
 begin
-    OutputDebugString(PChar(Msg))
+  OutputDebugString(PChar(Msg));
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -119,11 +123,12 @@ var
   mode: string;
   token: string;
   MyUUID: TGUID;
+  idleTime:integer;
 begin
   isMinimized := False;
   isShown := False;
-  lastx:=-1;
-  lastY:=-1;
+  lastx := -1;
+  lastY := -1;
 
 
   FSharedBuffer := nil;
@@ -151,9 +156,10 @@ begin
   startX := ini.readInteger('main', 'x', -1);
   startY := ini.readInteger('main', 'y', -1);
 
-  canReload:=ini.ReadBool('main','reload',false);
+  canReload := ini.ReadBool('main', 'reload', False);
 
-
+  idleTime:= ini.readInteger('main', 'idle', 10);
+  timerIdle.Interval:=idleTime*1000*60;
 
   ini.Free;
   urlIntranetTimer := urlIntranetTimer + '?timer=' + token;
@@ -171,17 +177,14 @@ end;
 procedure TMainForm.FormShow(Sender: TObject);
 begin
 
-
-  SetWindowPos(MainForm.Handle, HWND_TOPMOST, 0, 0, 0, 0,                      SWP_NoMove or SWP_NoSize);
+  SetWindowPos(MainForm.Handle, HWND_TOPMOST, 0, 0, 0, 0,
+    SWP_NoMove or SWP_NoSize);
   btReload.Visible := False;
   btExit.Visible := False;
 
 
-  curWidth := pnStatut.Width;
-  curHeight := pnStatut.Width;
-           curWidth :=200;
-                      curHeight :=200;
-  setSize(-1, -1, False);
+
+
 
   if GlobalWebView2Loader.InitializationError then
     ShowMessage(GlobalWebView2Loader.ErrorMessage)
@@ -201,25 +204,28 @@ begin
     MainForm.Left := startx;
     MainForm.top := startY;
   end;
+  curWidth := pnStatut.Width;
+  curHeight := pnStatut.Width;
+  setSize(-1, -1, false);
 
 end;
 
 procedure TMainForm.timerIdleTimer(Sender: TObject);
-var cX,cY:integer;
+var
+  cX, cY: integer;
 begin
   if (isMinimized) then
   begin
-    cx:=Mouse.CursorPos.x;
-    cY:=Mouse.CursorPos.y;
-    if (cX=lastX) and (cY=lastY) then
+    cx := Mouse.CursorPos.x;
+    cY := Mouse.CursorPos.y;
+    if (cX = lastX) and (cY = lastY) then
     begin
-      setSize(-1,-1,true);
-      isMinimized:=false;
+      WVBrowser1.PostWebMessageAsString('IDLE');
     end
     else
     begin
-      lastX:=cX;
-      lastY:=cY;
+      lastX := cX;
+      lastY := cY;
     end;
 
   end;
@@ -227,20 +233,20 @@ end;
 
 procedure TMainForm.tiMinimizeTimer(Sender: TObject);
 var
-  cX,cY:integer;
-   pt: TPoint;
+  cX, cY: integer;
+  pt: TPoint;
 begin
 
-       pt := Mouse.CursorPos;
+  pt := Mouse.CursorPos;
 
-//  cx:=Mouse.CursorPos.x;
+  //  cx:=Mouse.CursorPos.x;
   //cY:=Mouse.CursorPos.y;
 
-//  if (not isShown) then
-//  if not PtInRect(mainForm.BoundsRect, pt) then
+  //  if (not isShown) then
+  //  if not PtInRect(mainForm.BoundsRect, pt) then
   if not PtInRect(mainForm.BoundsRect, pt) then
   begin
-             DebugMsg('ici');
+    DebugMsg('ici');
     setSize(pnStatut.Width, pnStatut.Width, False);
     isMinimized := True;
 
@@ -440,9 +446,14 @@ begin
   stopAppli();
 end;
 
+procedure TMainForm.btHideClick(Sender: TObject);
+begin
+  tiHide.Enabled:=true;
+end;
+
 procedure TMainForm.btReloadClick(Sender: TObject);
 begin
-  loadPage();
+loadPage();
 
 end;
 
@@ -464,14 +475,18 @@ end;
 
 procedure TMainForm.pnStatutMouseEnter(Sender: TObject);
 begin
+  if not bsizing then
+  begin
   isMinimized := False;
   isShown := True;
   setSize(-1, -1, True);
+
+  end;
 end;
 
 procedure TMainForm.pnStatutMouseLeave(Sender: TObject);
 begin
-//  isShown := False;
+  //  isShown := False;
 end;
 
 procedure TMainForm.pnStatutMouseMove(Sender: TObject; Shift: TShiftState;
@@ -490,18 +505,32 @@ var
 begin
 
   startX := MainForm.Left;
-    startY := MainForm.top;
-  if (startX<0) then
+  startY := MainForm.top;
+  if (startX < 0) then
   begin
-  startX:=0;
-  MainForm.Left:=0;
+    startX := 0;
+    MainForm.Left := 0;
 
   end;
-  if (startY<0) then
+  if (startY < 0) then
   begin
-  startY:=0;
-  MainForm.top:=0;
+    startY := 0;
+    MainForm.top := 0;
   end;
+
+   if (startX + pnStatut.Width> Screen.Width) then
+  begin
+    startX := Screen.Width-pnStatut.Width;
+    MainForm.Left := startX;
+
+  end;
+  if (startY + pnStatut.Width> screen.Height) then
+  begin
+    startY := screen.Height-              pnStatut.Width;
+    MainForm.top := startY;
+  end;
+
+
 
 
 
@@ -510,6 +539,13 @@ begin
   ini.WriteInteger('main', 'y', startY);
   ini.Free;
   MouseIsDown := False;
+end;
+
+procedure TMainForm.tiHideTimer(Sender: TObject);
+begin
+  tiHide.Enabled:=false;
+  isMinimized:=true;
+  setSize(pnStatut.Width, pnStatut.Width, False);
 end;
 
 procedure TMainForm.WMMove(var aMessage: TWMMove);
@@ -535,8 +571,9 @@ end;
 
 procedure TMainForm.setSize(Width, Height: integer; bShowButton: boolean);
 begin
-  MainForm.Left:=startX;
-  MainForm.top:=startY;
+  bSizing:=true;
+  MainForm.Left := startX;
+  MainForm.top := startY;
   if (Width = -1) then
   begin
     MainForm.Width := curWidth;
@@ -549,8 +586,12 @@ begin
 
   end;
 
+
   btReload.Visible := (bShowButton and canReload);
+  btHide.visible:=bShowButton;
   btExit.Visible := bShowButton;
+
+  //pnButton.Visible:=bShowButton;
 
   if (not bShowButton) then
   begin
@@ -570,6 +611,7 @@ begin
     end;
 
   end;
+  bSizing:=false;
 
 end;
 

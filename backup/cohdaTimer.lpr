@@ -8,8 +8,6 @@ uses
 
 {.$R *.res}
 
-{$R *.res}
-
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;

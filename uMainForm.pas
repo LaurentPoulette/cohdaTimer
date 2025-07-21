@@ -19,8 +19,10 @@ type
   TMainForm = class(TForm)
     btExit: TBitBtn;
     btReload: TBitBtn;
+    btHide: TBitBtn;
     Panel1: TPanel;
     pnStatut: TPanel;
+    tiHide: TTimer;
     timerIdle: TTimer;
     tiMinimize: TTimer;
     WVWindowParent1: TWVWindowParent;
@@ -28,6 +30,7 @@ type
     WVBrowser1: TWVBrowser;
 
     procedure btExitClick(Sender: TObject);
+    procedure btHideClick(Sender: TObject);
     procedure btReloadClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -38,6 +41,7 @@ type
     procedure pnStatutMouseMove(Sender: TObject; Shift: TShiftState; X, Y: integer);
     procedure pnStatutMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: integer);
+    procedure tiHideTimer(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure SendMsgBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -78,6 +82,7 @@ var
   isShown: boolean;
   canReload: boolean;
   lastX, lastY: integer;
+  bSizing:boolean;
 
 implementation
 
@@ -118,6 +123,7 @@ var
   mode: string;
   token: string;
   MyUUID: TGUID;
+  idleTime:integer;
 begin
   isMinimized := False;
   isShown := False;
@@ -152,7 +158,8 @@ begin
 
   canReload := ini.ReadBool('main', 'reload', False);
 
-
+  idleTime:= ini.readInteger('main', 'idle', 10);
+  timerIdle.Interval:=idleTime*1000*60;
 
   ini.Free;
   urlIntranetTimer := urlIntranetTimer + '?timer=' + token;
@@ -176,11 +183,8 @@ begin
   btExit.Visible := False;
 
 
-  curWidth := pnStatut.Width;
-  curHeight := pnStatut.Width;
-  curWidth := 200;
-  curHeight := 200;
-  setSize(-1, -1, False);
+
+
 
   if GlobalWebView2Loader.InitializationError then
     ShowMessage(GlobalWebView2Loader.ErrorMessage)
@@ -200,6 +204,9 @@ begin
     MainForm.Left := startx;
     MainForm.top := startY;
   end;
+  curWidth := pnStatut.Width;
+  curHeight := pnStatut.Width;
+  setSize(-1, -1, false);
 
 end;
 
@@ -213,14 +220,7 @@ begin
     cY := Mouse.CursorPos.y;
     if (cX = lastX) and (cY = lastY) then
     begin
-      setSize(-1, -1, True);
-      isMinimized := False;
-
-      if MessageDlg('Inactivité', 'Souhaitez vous continuer la tâche',   mtConfirmation, [mbYes, mbNo, mbIgnore], 0) = mrYes then
-      begin
-
-      end;
-
+      WVBrowser1.PostWebMessageAsString('IDLE');
     end
     else
     begin
@@ -446,9 +446,14 @@ begin
   stopAppli();
 end;
 
+procedure TMainForm.btHideClick(Sender: TObject);
+begin
+  tiHide.Enabled:=true;
+end;
+
 procedure TMainForm.btReloadClick(Sender: TObject);
 begin
-  loadPage();
+loadPage();
 
 end;
 
@@ -470,9 +475,13 @@ end;
 
 procedure TMainForm.pnStatutMouseEnter(Sender: TObject);
 begin
+  if not bsizing then
+  begin
   isMinimized := False;
   isShown := True;
   setSize(-1, -1, True);
+
+  end;
 end;
 
 procedure TMainForm.pnStatutMouseLeave(Sender: TObject);
@@ -509,6 +518,20 @@ begin
     MainForm.top := 0;
   end;
 
+   if (startX + pnStatut.Width> Screen.Width) then
+  begin
+    startX := Screen.Width-pnStatut.Width;
+    MainForm.Left := startX;
+
+  end;
+  if (startY + pnStatut.Width> screen.Height) then
+  begin
+    startY := screen.Height-              pnStatut.Width;
+    MainForm.top := startY;
+  end;
+
+
+
 
 
   ini := TIniFile.Create(StringReplace(Application.exename, '.exe', '', []) + '.ini');
@@ -516,6 +539,13 @@ begin
   ini.WriteInteger('main', 'y', startY);
   ini.Free;
   MouseIsDown := False;
+end;
+
+procedure TMainForm.tiHideTimer(Sender: TObject);
+begin
+  tiHide.Enabled:=false;
+  isMinimized:=true;
+  setSize(pnStatut.Width, pnStatut.Width, False);
 end;
 
 procedure TMainForm.WMMove(var aMessage: TWMMove);
@@ -541,6 +571,7 @@ end;
 
 procedure TMainForm.setSize(Width, Height: integer; bShowButton: boolean);
 begin
+  bSizing:=true;
   MainForm.Left := startX;
   MainForm.top := startY;
   if (Width = -1) then
@@ -555,8 +586,12 @@ begin
 
   end;
 
+
   btReload.Visible := (bShowButton and canReload);
+  btHide.visible:=bShowButton;
   btExit.Visible := bShowButton;
+
+  //pnButton.Visible:=bShowButton;
 
   if (not bShowButton) then
   begin
@@ -576,6 +611,7 @@ begin
     end;
 
   end;
+  bSizing:=false;
 
 end;
 
