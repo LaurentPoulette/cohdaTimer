@@ -10,7 +10,6 @@
         <IsPartOfProject Value="True"/>
         <UsageCount Value="257"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="uMainForm.pas"/>
@@ -20,15 +19,14 @@
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="203"/>
-        <CursorPos X="114" Y="210"/>
+        <TopLine Value="113"/>
+        <CursorPos X="59" Y="139"/>
         <UsageCount Value="257"/>
         <Bookmarks Count="1">
-          <Item0 X="52" Y="276" ID="9"/>
+          <Item0 X="52" Y="287" ID="9"/>
         </Bookmarks>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\source\uWVBrowser.pas"/>
@@ -132,7 +130,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="38"/>
         <CursorPos X="19" Y="38"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="13"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -146,73 +144,11 @@
         <EditorIndex Value="2"/>
         <TopLine Value="2959"/>
         <CursorPos Y="2976"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="590" TopLine="574"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="592" TopLine="574"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="595" TopLine="574"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="601" TopLine="574"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="603" TopLine="576"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="561" TopLine="544"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="590" TopLine="574"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="562" Column="59" TopLine="544"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="590" TopLine="574"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="550" Column="139" TopLine="544"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="47" Column="21" TopLine="19"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="187" Column="43" TopLine="182"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="26" Column="14"/>
-      </Position>
-      <Position>
-        <Filename Value="uMainForm.pas"/>
-        <Caret Line="48" Column="24" TopLine="21"/>
-      </Position>
       <Position>
         <Filename Value="uMainForm.pas"/>
         <Caret Line="126" Column="7" TopLine="98"/>
@@ -267,6 +203,70 @@
       <Position>
         <Filename Value="uMainForm.pas"/>
         <Caret Line="149" Column="71" TopLine="135"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="216" Column="64" TopLine="202"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="47" Column="23" TopLine="31"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="344" TopLine="323"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="86" Column="19" TopLine="72"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="129" Column="6" TopLine="109"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="179" Column="12" TopLine="173"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="119" Column="18" TopLine="93"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="87" Column="18" TopLine="69"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="120" Column="10" TopLine="125"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="183" Column="10" TopLine="166"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="259" Column="5" TopLine="242"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="52" Column="43" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="358" Column="34" TopLine="331"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="58" Column="21" TopLine="41"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="134" Column="3" TopLine="126"/>
+      </Position>
+      <Position>
+        <Filename Value="uMainForm.pas"/>
+        <Caret Line="122" Column="63" TopLine="115"/>
       </Position>
     </JumpHistory>
     <RunParams>

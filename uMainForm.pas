@@ -83,6 +83,8 @@ var
   canReload: boolean;
   lastX, lastY: integer;
   bSizing:boolean;
+  logData:TStringList;
+  logFile:string;
 
 implementation
 
@@ -112,9 +114,10 @@ const
   CUSTOM_SHARED_BUFFER_SIZE = 1024;
 
 
-procedure DebugMsg(const Msg: string);
+procedure log(const Msg: string);
 begin
-  OutputDebugString(PChar(Msg));
+  logData.Add(msg);
+  logData.SaveToFile(logFile);
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -125,6 +128,10 @@ var
   MyUUID: TGUID;
   idleTime:integer;
 begin
+  logData:=TStringList.Create;
+  logFile:= ExtractFileDir(Application.ExeName)+'\log.txt';
+  if (FileExists(logFile) ) then
+    logData.LoadFromFile(logFile);
   isMinimized := False;
   isShown := False;
   lastx := -1;
@@ -172,6 +179,9 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   if assigned(FSharedBuffer) then
     FreeAndNil(FSharedBuffer);
+
+
+  logData.Free;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -204,8 +214,9 @@ begin
     MainForm.Left := startx;
     MainForm.top := startY;
   end;
-  curWidth := pnStatut.Width;
-  curHeight := pnStatut.Width;
+
+  curWidth := pnStatut.Width*4;
+  curHeight := pnStatut.Width*4;
   setSize(-1, -1, false);
 
 end;
@@ -246,7 +257,7 @@ begin
   //  if not PtInRect(mainForm.BoundsRect, pt) then
   if not PtInRect(mainForm.BoundsRect, pt) then
   begin
-    DebugMsg('ici');
+
     setSize(pnStatut.Width, pnStatut.Width, False);
     isMinimized := True;
 
@@ -340,9 +351,12 @@ var
   statut, sWidth, sHeight, sShow, sColor: string;
   tMessage: array of string;
   color: integer;
+
 begin
   TempArgs := TCoreWebView2WebMessageReceivedEventArgs.Create(aArgs);
   TempMsg := TempArgs.WebMessageAsString;
+
+  log(TempMsg);
   //  MessagesMem.Lines.Add('Message received : ' + TempMsg);
 
   // The "SharedBufferDataUpdated" message is used to notify the main process that the buffer has been updated.
