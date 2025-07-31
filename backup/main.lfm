@@ -1,0 +1,8 @@
+object main: Tmain
+  Left = 581
+  Height = 240
+  Top = 250
+  Width = 320
+  BorderStyle = bsSizeToolWin
+  Caption = 'main'
+end
